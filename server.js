@@ -58,55 +58,6 @@ app.post('/books', (req, res) => {
     });
 });
 
-// PUT/books/:id - Update a book by ID
-app.put('/books/:id', (req, res) => {
-    const books = getBooks();
-    const dataPath = path.join(__dirname, 'data', 'books.json');
-
-    const id = parseInt(req.params.id);
-    const bookIndex = books.findIndex(b => b.id === id);
-
-    if (bookIndex === -1) {
-        return res.status(404).json({ message: "Book not found" });
-    }
-
-    books[bookIndex] = {
-        ...books[bookIndex],
-        title: req.body.title || books[bookIndex].title,
-        author: req.body.author || books[bookIndex].author,
-        genre: req.body.genre || books[bookIndex].genre,
-        available: req.body.available ?? books[bookIndex].available
-    };
-
-    fs.writeFileSync(dataPath, JSON.stringify(books, null, 2));
-
-    res.json({
-        message: "Book updated successfully",
-        book: books[bookIndex]
-    });
-});
-
-// DELETE/books/:id - Delete a book by ID
-app.delete('/books/:id', (req, res) => {
-    const books = getBooks();
-    const dataPath = path.join(__dirname, 'data', 'books.json');
-
-    const id = parseInt(req.params.id);
-
-    const filteredBooks = books.filter(b => b.id !== id);
-
-    if (books.length === filteredBooks.length) {
-        return res.status(404).json({ message: "Book not found" });
-    }
-
-    fs.writeFileSync(dataPath, JSON.stringify(filteredBooks, null, 2));
-
-    res.json({
-        message: "Book deleted successfully"
-    });
-});
-
-
 // Server Start
 const PORT = process.env.PORT || 5000;
 
