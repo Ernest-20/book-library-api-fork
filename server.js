@@ -35,6 +35,57 @@ app.get('/books/:id', (req, res) => {
     res.json(book);
 });
 
+// POST/books - Add a new book
+app.post('/books', (req, res) => {
+    const books = getBooks();
+    const dataPath = path.join(__dirname, 'data', 'books.json');
+
+    const newBook = {
+        id: books.length + 1,
+        title: req.body.title,
+        author: req.body.author,
+        genre: req.body.genre,
+        publicationYear: req.body.publicationYear
+    };
+
+    books.push(newBook);
+
+    fs.writeFileSync(dataPath, JSON.stringify(books));
+
+    res.status(201).json({
+        message: 'Book added successfully',
+        book: newBook
+    });
+});
+
+// PUT/books/:id - Update a book by ID
+app.put('/books/:id', (req, res) => {
+    const books = getBooks();
+    const dataPath = path.join(__dirname, 'data', 'books.json');
+
+    const id = parseInt(req.params.id);
+    const bookIndex = books.findIndex(b => b.id === id);
+
+    if (bookIndex === -1) {
+        return res.status(404).json({ message: "Book not found" });
+    }
+
+    books[bookIndex] = {
+        ...books[bookIndex],
+        title: req.body.title || books[bookIndex].title,
+        author: req.body.author || books[bookIndex].author,
+        genre: req.body.genre || books[bookIndex].genre,
+        available: req.body.available ?? books[bookIndex].available
+    };
+
+    fs.writeFileSync(dataPath, JSON.stringify(books, null, 2));
+
+    res.json({
+        message: "Book updated successfully",
+        book: books[bookIndex]
+    });
+});
+
 
 // Server Start
 const PORT = process.env.PORT || 5000;
