@@ -86,6 +86,26 @@ app.put('/books/:id', (req, res) => {
     });
 });
 
+// DELETE/books/:id - Delete a book by ID
+app.delete('/books/:id', (req, res) => {
+    const books = getBooks();
+    const dataPath = path.join(__dirname, 'data', 'books.json');
+
+    const id = parseInt(req.params.id);
+
+    const filteredBooks = books.filter(b => b.id !== id);
+
+    if (books.length === filteredBooks.length) {
+        return res.status(404).json({ message: "Book not found" });
+    }
+
+    fs.writeFileSync(dataPath, JSON.stringify(filteredBooks, null, 2));
+
+    res.json({
+        message: "Book deleted successfully"
+    });
+});
+
 
 // Server Start
 const PORT = process.env.PORT || 5000;
