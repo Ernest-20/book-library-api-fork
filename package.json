@@ -21,7 +21,8 @@
   "homepage": "https://github.com/Ernest-20/book-library-api#readme",
   "dependencies": {
     "cors": "^2.8.6",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "joi": "^18.2.3"
   },
   "devDependencies": {
     "dotenv": "^17.4.2",
